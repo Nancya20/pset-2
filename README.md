@@ -340,7 +340,7 @@ docker compose down -v
 
 ---
 
-## Troubleshooting
+## Solución de problemas
 
 | Problema | Solución |
 |---|---|
