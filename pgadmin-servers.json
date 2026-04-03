@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "NY Taxi DW",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "taxiuser",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    }
+  }
+}

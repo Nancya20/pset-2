@@ -1,0 +1,63 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: Load from Raw Schema
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: load_from_raw_schema
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: Transform to Clean
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - load_from_raw_schema
+  uuid: transform_to_clean
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: Export to Clean Postgres
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - transform_to_clean
+  uuid: export_to_clean_postgres
+created_at: '2025-01-01 00:00:00.000000+00:00'
+data_integration: null
+description: >
+  Pipeline 2 - Transformación dimensional desde raw hacia clean.
+  Construye fact_trips + 5 dimensiones en PostgreSQL schema clean.
+  Ejecutar DESPUÉS de raw_ingestion.
+executor_type: null
+name: clean_transformation
+run_pipeline_in_one_process: false
+spark_config: {}
+tags:
+  - clean
+  - dimensional
+  - ny-taxi
+type: python
+updated_at: '2025-01-01 00:00:00.000000+00:00'
+uuid: clean_transformation
+widgets: []

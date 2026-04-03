@@ -1,0 +1,103 @@
+version: "3.9"
+
+services:
+  # ─────────────────────────────────────────
+  # Data Warehouse
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:15
+    container_name: ny_taxi_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - taxi_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────
+  # Orchestrator
+  # ─────────────────────────────────────────
+  mage:
+    image: mageai/mageai:latest
+    container_name: ny_taxi_mage
+    restart: unless-stopped
+    command: mage start ny_taxi_project
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Mage settings
+      PROJECT_NAME: ny_taxi_project
+      MAGE_DATA_DIR: /home/src
+      REQUIRE_USER_AUTHENTICATION: "0"
+      # PostgreSQL secrets (inyectados desde .env)
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+      PG_DATABASE: ${PG_DATABASE}
+      PG_RAW_SCHEMA: ${PG_RAW_SCHEMA}
+      PG_CLEAN_SCHEMA: ${PG_CLEAN_SCHEMA}
+      # Data range
+      START_YEAR: ${START_YEAR}
+      END_YEAR: ${END_YEAR}
+      START_MONTH: ${START_MONTH}
+      END_MONTH: ${END_MONTH}
+      FORCE_RELOAD: ${FORCE_RELOAD:-false}
+    ports:
+      - "6789:6789"
+    volumes:
+      - mage_data:/home/src
+    networks:
+      - taxi_network
+
+  # ─────────────────────────────────────────
+  # UI de inspección y validación
+  # ─────────────────────────────────────────
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ny_taxi_pgadmin
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "9000:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin-servers.json:/pgadmin4/servers.json
+    networks:
+      - taxi_network
+
+# ─────────────────────────────────────────
+# Volúmenes persistentes
+# ─────────────────────────────────────────
+volumes:
+  postgres_data:
+    name: ny_taxi_postgres_data
+  pgadmin_data:
+    name: ny_taxi_pgadmin_data
+  mage_data:
+    name: ny_taxi_mage_data
+
+# ─────────────────────────────────────────
+# Red interna
+# ─────────────────────────────────────────
+networks:
+  taxi_network:
+    name: ny_taxi_network
+    driver: bridge

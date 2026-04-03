@@ -1,0 +1,4 @@
+cluster_type:
+variables_dir: ~/.mage_data
+remote_variables_dir:
+project_uuid: 077e233d95e0483cb22a2329b937234a

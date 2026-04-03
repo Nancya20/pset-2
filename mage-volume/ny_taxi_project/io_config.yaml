@@ -1,0 +1,16 @@
+version: 1
+
+# ─────────────────────────────────────────────────────────────────
+# Perfil de conexión a PostgreSQL.
+# Todos los valores sensibles se leen desde variables de entorno
+# inyectadas por Docker Compose. NUNCA hardcodear credenciales aquí.
+# ─────────────────────────────────────────────────────────────────
+default_profile:
+  POSTGRES_CONNECT_TIMEOUT: 30
+  POSTGRES_DBNAME:   "{{ env_var('PG_DATABASE') }}"
+  POSTGRES_HOST:     "{{ env_var('PG_HOST') }}"
+  POSTGRES_PASSWORD: "{{ env_var('PG_PASSWORD') }}"
+  POSTGRES_PORT:     "{{ env_var('PG_PORT') }}"
+  POSTGRES_SCHEMA:   "{{ env_var('PG_RAW_SCHEMA') }}"
+  POSTGRES_USER:     "{{ env_var('PG_USER') }}"
+  POSTGRES_CONNECTION_METHOD: direct

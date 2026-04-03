@@ -1,0 +1,32 @@
+# Secrets — nunca al repositorio
+.env
+
+# Datos descargados
+mage-volume/ny_taxi_project/.ssh/
+mage-volume/ny_taxi_project/secrets/
+
+# Mage runtime (generados automáticamente)
+mage-volume/ny_taxi_project/.cache/
+mage-volume/ny_taxi_project/mage-ai.db
+mage-volume/ny_taxi_project/.ssh_tunnel/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# pgAdmin
+pgadmin_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Screenshots (agrega las tuyas manualmente)
+screenshots/*.png
+!screenshots/.gitkeep
